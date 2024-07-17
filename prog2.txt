@@ -1,0 +1,19 @@
+#include <LPC214x.h>
+
+void wait(){
+    T0TCR = 1;  // Enable the timer
+    while(!(T0TC == T0MR0));  // Wait until the timer counter matches the match register
+    T0TCR = 2;  // Reset the timer
+    T0TCR = 0;  // Disable the timer
+}
+
+int main(){
+    T0MR0 = 0x00000100;  // Set match value
+    T0MCR = 0x4;  // Reset on match
+
+    while(1){
+	IODIR0 = 0xFFFFFFFF;  // Set all pins as output
+        IOPIN0 = ~IOPIN0;  // Toggle all pins
+        wait();  // Wait for the timer
+    }
+}
